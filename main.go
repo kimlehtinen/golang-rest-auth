@@ -22,7 +22,9 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/", Home)
-	router.GET("/auth", controllers.Auth)
 	router.GET("/hello/:name", HelloName)
+
+	router.POST("/api/user/create", controllers.CreateUser)
+
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

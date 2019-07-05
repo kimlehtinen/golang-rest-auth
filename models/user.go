@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"os"
 	"regexp"
 
@@ -34,6 +35,47 @@ func Find(id uint) *User {
 
 	user.Password = "" // don't return psw in response
 	return user
+}
+
+func Login(email, psw string) map[string]interface{} {
+	user := &User{}
+
+	err := DB().Table("users").Where("email = ?", email).First(user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return map[string]interface{}{
+				"status":  false,
+				"message": "User couldn't be found",
+			}
+		}
+
+		return map[string]interface{}{
+			"status":  false,
+			"message": "DB error",
+		}
+	}
+
+	pswErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(psw))
+	if pswErr != nil {
+		log.Fatalf("psw compare error: %v", pswErr)
+		if pswErr == bcrypt.ErrMismatchedHashAndPassword {
+			return map[string]interface{}{
+				"status":  false,
+				"message": "Passwords do not match!",
+			}
+		}
+	}
+
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &JwtToken{UserID: user.ID})
+	tokenStr, _ := token.SignedString([]byte(os.Getenv("jwt_secret")))
+	user.Token = tokenStr
+
+	user.Password = "" // don't return psw in response
+	return map[string]interface{}{
+		"status":  true,
+		"message": "User logged in successfully!",
+		"user":    user,
+	}
 }
 
 // Create creates new user

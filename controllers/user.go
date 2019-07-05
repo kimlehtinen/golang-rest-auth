@@ -32,3 +32,23 @@ func CreateUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	json.NewEncoder(w).Encode(user.Create())
 }
+
+// LoginUser ...
+func LoginUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	user := &models.User{}
+
+	w.Header().Add("Content-Type", "application/json")
+
+	err := json.NewDecoder(r.Body).Decode(user)
+	if err != nil {
+		resp := map[string]interface{}{
+			"status":  false,
+			"message": "Login failed",
+		}
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	resp := models.Login(user.Email, user.Password)
+	json.NewEncoder(w).Encode(resp)
+}

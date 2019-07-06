@@ -23,3 +23,6 @@ Header:
 ``` 
 Authorization : Bearer <token>
 ``` 
+
+## Todo
+- password reset

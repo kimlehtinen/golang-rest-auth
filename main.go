@@ -5,10 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kim3z/golang-rest-auth/middleware"
-
 	"github.com/julienschmidt/httprouter"
 	"github.com/kim3z/golang-rest-auth/controllers"
+	"github.com/kim3z/golang-rest-auth/middleware"
 )
 
 func Home(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

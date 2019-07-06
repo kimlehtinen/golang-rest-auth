@@ -6,13 +6,9 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/kim3z/golang-rest-auth/mail"
 	"github.com/kim3z/golang-rest-auth/models"
 )
-
-// Authenticate ...
-func Authenticate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Auth!\n")
-}
 
 // CreateUser ...
 func CreateUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -51,4 +47,24 @@ func LoginUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	resp := models.Login(user.Email, user.Password)
 	json.NewEncoder(w).Encode(resp)
+}
+
+// ForgotPassword ...
+func ForgotPassword(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	email := ps.ByName("email")
+	w.Header().Add("Content-Type", "application/json")
+
+	resetPswStatus, ok := models.SetResetPasswordToken(email)
+
+	if !ok {
+		json.NewEncoder(w).Encode(resetPswStatus)
+		return
+	}
+
+	user := resetPswStatus["user"].(*models.User)
+	fmt.Println(user.Email)
+
+	// TODO: Escape/Render html in email
+	msg := fmt.Sprintf("<a href=\"localhost:8080/api/user/reset/%s\">Rest password</a>", user.TokenReset)
+	mail.Send([]string{user.Email}, "Password reset", msg)
 }

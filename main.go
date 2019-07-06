@@ -32,6 +32,7 @@ func main() {
 
 	router.POST("/api/user/create", controllers.CreateUser)
 	router.POST("/api/user/login", controllers.LoginUser)
+	router.POST("/api/user/forgot-password/:email", controllers.ForgotPassword)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

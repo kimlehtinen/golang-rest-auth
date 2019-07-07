@@ -19,6 +19,7 @@ func main() {
 	router.POST("/api/user/create", controllers.CreateUser)
 	router.POST("/api/user/login", controllers.LoginUser)
 	router.POST("/api/user/forgot-password/:email", controllers.ForgotPassword)
+	router.GET("/api/user/reset-psw-check/:reset-token", controllers.ResetPasswordCheck)
 
 	// Protected route example
 	// router.GET("/foo", middleware.Authenticate(httprouter.Handle(Foo)))

@@ -174,6 +174,7 @@ func SetResetPasswordToken(email string) (map[string]interface{}, bool) {
 	resetToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &JwtToken{UserID: user.ID})
 	resetTokenStr, _ := resetToken.SignedString([]byte(os.Getenv("jwt_secret")))
 	user.TokenReset = resetTokenStr
+	// TODO: Fix date time
 	user.TokenResetExpires = time.Now().Add(time.Hour*1 + time.Minute*0 + time.Second*0)
 
 	DB().Save(&user)

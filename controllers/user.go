@@ -64,7 +64,8 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 	user := resetPswStatus["user"].(*models.User)
 	fmt.Println(user.Email)
 
-	// TODO: Escape/Render html in email
-	msg := fmt.Sprintf("<a href=\"localhost:8080/api/user/reset/%s\">Rest password</a>", user.TokenReset)
-	mail.Send([]string{user.Email}, "Password reset", msg)
+	resetLink := fmt.Sprintf("http://localhost:8080/api/user/reset/%s", user.TokenReset)
+	mailData := map[string]string{"link": resetLink}
+
+	mail.Send([]string{user.Email}, "Password reset", mailData, "resetpassword.html")
 }

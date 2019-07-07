@@ -5,13 +5,18 @@ package mail
 */
 
 import (
+	"bytes"
 	"crypto/tls"
 	"fmt"
+	"html/template"
 	"log"
 	"net/smtp"
 	"os"
+	"path/filepath"
 	"strings"
 )
+
+const MIME = "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 
 type Mail struct {
 	sender    string
@@ -38,19 +43,38 @@ func (mail *Mail) Message() string {
 	}
 
 	msg += fmt.Sprintf("Subject: %s\r\n", mail.subject)
+	msg += MIME + "\r\n"
 	msg += "\r\n" + mail.body
 
 	return msg
 }
 
-// Send sends email
-func Send(to []string, subj string, msg string) {
-	mail := Mail{
-		sender:    os.Getenv("mail_user"),
-		recievers: to,
-		subject:   subj,
-		body:      msg,
+func (m *Mail) parseTemplate(file string, msg interface{}) error {
+	filePath, _ := filepath.Abs("./mail/templates/" + file)
+	t, err := template.ParseFiles(filePath)
+	if err != nil {
+		return err
 	}
+	bfr := new(bytes.Buffer)
+	if err = t.Execute(bfr, msg); err != nil {
+		return err
+	}
+	m.body = bfr.String()
+	return nil
+}
+
+// Send sends email
+func Send(to []string, subj string, msgData interface{}, htmlTemp string) {
+	mail := &Mail{}
+
+	err := mail.parseTemplate(htmlTemp, msgData)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mail.sender = os.Getenv("mail_user")
+	mail.recievers = to
+	mail.subject = subj
 
 	// Build email
 	finalMail := mail.Message()

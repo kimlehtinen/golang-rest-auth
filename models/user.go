@@ -19,7 +19,7 @@ type User struct {
 	Password          string    `json:"password"`
 	Token             string    `json:"token";sql:"-"`
 	TokenReset        string    `json:"tokenReset";sql:"-"`
-	TokenResetExpires time.Time `gorm:"type:time" json:"tokenResetTime"`
+	TokenResetExpires time.Time `json:"tokenResetTime"`
 }
 
 // JwtToken ...
@@ -174,9 +174,7 @@ func SetResetPasswordToken(email string) (map[string]interface{}, bool) {
 	resetToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &JwtToken{UserID: user.ID})
 	resetTokenStr, _ := resetToken.SignedString([]byte(os.Getenv("jwt_secret")))
 	user.TokenReset = resetTokenStr
-	// TODO: Fix date time
 	user.TokenResetExpires = time.Now().Add(time.Hour*1 + time.Minute*0 + time.Second*0)
-
 	DB().Save(&user)
 
 	user.Password = "" // don't return psw in response

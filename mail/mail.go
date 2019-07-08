@@ -80,8 +80,8 @@ func Send(to []string, subj string, msgData interface{}, htmlTemp string) {
 	finalMail := mail.Message()
 
 	mServer := MailServer{
-		host: "smtp.gmail.com",
-		port: "465",
+		host: os.Getenv("mail_server"),
+		port: os.Getenv("mail_port"),
 	}
 
 	// New smtp auth that uses password from .env

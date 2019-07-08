@@ -3,7 +3,7 @@
 2. [Features](#features)
 3. [Stack](#stack)
 4. [Routes](#routes)
-5. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
+5. [Email example](#email-example)
 
   
 ## Getting started
@@ -169,3 +169,7 @@ Header:
 ```
 Authorization : Bearer <token>
 ```
+
+## Email example
+
+<img src="email_example.jpg" alt="Example email" width="200"/>

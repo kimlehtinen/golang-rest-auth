@@ -1,11 +1,29 @@
 # Table of Contents:
-1. [Getting started](#getting-started)
-2. [Features](#features)
-3. [Stack](#stack)
+1. [Features](#features)
+2. [Stack](#stack)
+3. [Getting started](#getting-started)
 4. [Routes](#routes)
 5. [Email example](#email-example)
 
+## Features:
+
+- user register
+
+- user login
+
+- protected routes (middleware)
+
+- password reset email
+
   
+
+## Stack
+
+- golang server
+
+- postgres db
+
+
 ## Getting started
 Create a `.env` file and change this so it works for you:
 ``` 
@@ -34,24 +52,6 @@ If you don't have go1.12 you can do it with docker as well: <br>
 `make docker-build`
 #### Run executable
 `bin/server`
-
-## Features:
-
-- user register
-
-- user login
-
-- protected routes (middleware)
-
-- password reset email
-
-  
-
-## Stack
-
-- golang server
-
-- postgres db
 
   
 

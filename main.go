@@ -25,5 +25,6 @@ func main() {
 	// Protected route example
 	// router.GET("/foo", middleware.Authenticate(httprouter.Handle(Foo)))
 
+	fmt.Println("Listening on localhost:8080...")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

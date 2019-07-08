@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 	"time"
@@ -26,6 +25,11 @@ type User struct {
 type JwtToken struct {
 	jwt.StandardClaims
 	UserID uint
+}
+
+type PasswordReset struct {
+	TokenReset  string `json:"token_reset"`
+	NewPassword string `json:"new_password"`
 }
 
 // Find user by id
@@ -59,14 +63,11 @@ func Login(email, psw string) map[string]interface{} {
 		}
 	}
 
-	pswErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(psw))
-	if pswErr != nil {
-		log.Fatalf("psw compare error: %v", pswErr)
-		if pswErr == bcrypt.ErrMismatchedHashAndPassword {
-			return map[string]interface{}{
-				"status":  false,
-				"message": "Passwords do not match!",
-			}
+	pswErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(psw)) // should only return nil if passwords match
+	if pswErr != nil || pswErr == bcrypt.ErrMismatchedHashAndPassword {
+		return map[string]interface{}{
+			"status":  false,
+			"message": "Passwords do not match!",
 		}
 	}
 
